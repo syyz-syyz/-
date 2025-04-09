@@ -84,10 +84,14 @@ def main():
             # 筛选出选择列、H列和I列
             final_df = result_df[[selected_column, 'H', 'I']]
 
-            # 取前 10 行
-            final_df = final_df.head(10)
+            # 取前 10 行用于预览
+            preview_df = final_df.head(10)
 
-            # 保存为 Excel 文件
+            # 在网页上显示前 10 行预览
+            st.write("拆分后数据的前 10 行预览：")
+            st.dataframe(preview_df)
+
+            # 保存完整数据为 Excel 文件
             output_file = "output.xlsx"
             final_df.to_excel(output_file, index=False)
 
@@ -95,7 +99,7 @@ def main():
             if os.path.exists(output_file):
                 with open(output_file, "rb") as file:
                     st.download_button(
-                        label="下载拆分后的文件",
+                        label="下载拆分后的完整文件",
                         data=file,
                         file_name="output.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
