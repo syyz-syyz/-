@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-def extract_data(df, selected_column):
+def extract_data(df, selected_column, fixed_phrases):
     unit_list = "包倍笔袋刀个罐盒斤块排瓶条箱桶支克"
     h_values = []
     i_values = []
@@ -22,7 +22,20 @@ def extract_data(df, selected_column):
         has_chinese = False
         number_appeared = False
 
-        for char in cell_value:
+        index = 0
+        while index < len(cell_value):
+            # 检查是否包含固定词组
+            found_fixed_phrase = False
+            for phrase in fixed_phrases:
+                if cell_value[index:].startswith(phrase):
+                    h_value += phrase
+                    index += len(phrase)
+                    found_fixed_phrase = True
+                    break
+            if found_fixed_phrase:
+                continue
+
+            char = cell_value[index]
             if char.isdigit():
                 has_number = True
                 number_appeared = True
@@ -39,6 +52,7 @@ def extract_data(df, selected_column):
                 h_value += char
                 if char in unit_list:
                     number_appeared = False
+            index += 1
 
         if has_number and has_non_number and (has_english or has_chinese):
             h_values.append(h_value)
@@ -57,6 +71,10 @@ def main():
 
     # 上传 Excel 文件
     uploaded_file = st.file_uploader("上传 Excel 文件", type=["xlsx", "xls"])
+
+    # 让用户输入固定词组
+    fixed_phrases_input = st.text_input("输入要保留的固定词组，用逗号分隔（例如：0添加,0度,99%）")
+    fixed_phrases = [phrase.strip() for phrase in fixed_phrases_input.split(',') if phrase.strip()]
 
     if uploaded_file is not None:
         # 读取 Excel 文件
@@ -79,7 +97,7 @@ def main():
 
         if st.button("拆分列"):
             # 调用函数进行拆分
-            result_df = extract_data(df.copy(), selected_column)
+            result_df = extract_data(df.copy(), selected_column, fixed_phrases)
 
             # 筛选出选择列、H列和I列
             final_df = result_df[[selected_column, 'H', 'I']]
