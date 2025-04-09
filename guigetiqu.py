@@ -21,10 +21,9 @@ def extract_data(df, selected_column, fixed_phrases):
         has_english = False
         has_chinese = False
         number_appeared = False
-
         index = 0
+
         while index < len(cell_value):
-            # 检查是否包含固定词组
             found_fixed_phrase = False
             for phrase in fixed_phrases:
                 if cell_value[index:].startswith(phrase):
@@ -72,9 +71,13 @@ def main():
     # 上传 Excel 文件
     uploaded_file = st.file_uploader("上传 Excel 文件", type=["xlsx", "xls"])
 
+    # 默认固定词组
+    default_fixed_phrases = ["0添加", "0度", "99%"]
+
     # 让用户输入固定词组
     fixed_phrases_input = st.text_input("输入要保留的固定词组，用逗号分隔（例如：0添加,0度,99%）")
-    fixed_phrases = [phrase.strip() for phrase in fixed_phrases_input.split(',') if phrase.strip()]
+    user_fixed_phrases = [phrase.strip() for phrase in fixed_phrases_input.split(',') if phrase.strip()]
+    fixed_phrases = default_fixed_phrases + user_fixed_phrases
 
     if uploaded_file is not None:
         # 读取 Excel 文件
