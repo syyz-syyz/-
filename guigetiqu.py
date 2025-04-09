@@ -109,7 +109,7 @@ def main():
             preview_df = final_df.head(10)
 
             # 在网页上显示前 10 行预览
-            st.write("拆分后数据的前 10 行预览：")
+            st.write("拆分后数据的前 30 行预览：")
             st.dataframe(preview_df)
 
             # 保存完整数据为 Excel 文件
