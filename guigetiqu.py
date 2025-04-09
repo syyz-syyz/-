@@ -5,17 +5,17 @@ import os
 
 def extract_data(df, selected_column, fixed_phrases):
     unit_list = "包倍笔袋刀个罐盒斤块排瓶条箱桶支克升"
-    h_values = []
-    i_values = []
+    product_name_values = []
+    product_specification_values = []
 
     for cell_value in df[selected_column]:
         if pd.isna(cell_value):
-            h_values.append(cell_value)
-            i_values.append("")
+            product_name_values.append(cell_value)
+            product_specification_values.append("")
             continue
         cell_value = str(cell_value)
-        h_value = ""
-        i_value = ""
+        product_name = ""
+        product_specification = ""
         has_number = False
         has_non_number = False
         has_english = False
@@ -27,7 +27,7 @@ def extract_data(df, selected_column, fixed_phrases):
             found_fixed_phrase = False
             for phrase in fixed_phrases:
                 if cell_value[index:].startswith(phrase):
-                    h_value += phrase
+                    product_name += phrase
                     index += len(phrase)
                     found_fixed_phrase = True
                     break
@@ -41,27 +41,27 @@ def extract_data(df, selected_column, fixed_phrases):
             else:
                 has_non_number = True
             if char.isdigit() or (char in unit_list and number_appeared) or (char in "-_*."):
-                i_value += char
+                product_specification += char
                 if char in unit_list:
                     has_chinese = True
             elif ((65 <= ord(char) <= 90) or (97 <= ord(char) <= 122)) and number_appeared:
-                i_value += char
+                product_specification += char
                 has_english = True
             else:
-                h_value += char
+                product_name += char
                 if char in unit_list:
                     number_appeared = False
             index += 1
 
         if has_number and has_non_number and (has_english or has_chinese):
-            h_values.append(h_value)
-            i_values.append(i_value)
+            product_name_values.append(product_name)
+            product_specification_values.append(product_specification)
         else:
-            h_values.append(cell_value)
-            i_values.append("")
+            product_name_values.append(cell_value)
+            product_specification_values.append("")
 
-    df['H'] = h_values
-    df['I'] = i_values
+    df['产品名称'] = product_name_values
+    df['产品规格'] = product_specification_values
     return df
 
 
@@ -102,8 +102,8 @@ def main():
             # 调用函数进行拆分
             result_df = extract_data(df.copy(), selected_column, fixed_phrases)
 
-            # 筛选出选择列、H列和I列
-            final_df = result_df[[selected_column, 'H', 'I']]
+            # 筛选出选择列、产品名称列和产品规格列
+            final_df = result_df[[selected_column, '产品名称', '产品规格']]
 
             # 取前 10 行用于预览
             preview_df = final_df.head(10)
