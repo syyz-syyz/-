@@ -106,7 +106,7 @@ def main():
             final_df = result_df[[selected_column, '产品名称', '产品规格']]
 
             # 取前 10 行用于预览
-            preview_df = final_df.head(10)
+            preview_df = final_df.head(30)
 
             # 在网页上显示前 10 行预览
             st.write("拆分后数据的前 30 行预览：")
