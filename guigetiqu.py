@@ -81,9 +81,15 @@ def main():
             # 调用函数进行拆分
             result_df = extract_data(df.copy(), selected_column)
 
+            # 筛选出选择列、H列和I列
+            final_df = result_df[[selected_column, 'H', 'I']]
+
+            # 取前 10 行
+            final_df = final_df.head(10)
+
             # 保存为 Excel 文件
             output_file = "output.xlsx"
-            result_df.to_excel(output_file, index=False)
+            final_df.to_excel(output_file, index=False)
 
             # 提供下载链接
             if os.path.exists(output_file):
