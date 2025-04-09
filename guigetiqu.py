@@ -4,7 +4,7 @@ import os
 
 
 def extract_data(df, selected_column):
-    unit_list = "包倍笔袋刀个罐盒斤块排瓶条箱桶支"
+    unit_list = "包倍笔袋刀个罐盒斤块排瓶条箱桶支克"
     h_values = []
     i_values = []
 
